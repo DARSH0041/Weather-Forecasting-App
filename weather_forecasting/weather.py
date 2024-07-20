@@ -1,15 +1,29 @@
 import requests
 import tkinter as tk
 from PIL import ImageTk, Image
-
+import json
 def get_weather():
-    global result_label,result1_label,result2_label,result3_label,result4_label,err_label
-    result_label = tk.Label(root, text="", bg='white',justify='center')
-    result1_label = tk.Label(root, text="", bg='white',justify='center')
-    result2_label = tk.Label(root, text="", bg='white',justify='center')
-    result3_label = tk.Label(root, text="", bg='white',justify='center')
-    result4_label = tk.Label(root, text="", bg='white',justify='center')
-    err_label = tk.Label(root, text="", bg='white')
+    global result_label, result1_label, result2_label, result3_label, result4_label, err_label
+    try:
+        result_label.destroy()
+        result1_label.destroy()
+        result2_label.destroy()
+        result3_label.destroy()
+        result4_label.destroy()
+    except Exception as e:
+        result_label = tk.Label(root, text="", bg='white',justify='center')
+        result1_label = tk.Label(root, text="", bg='white',justify='center')
+        result2_label = tk.Label(root, text="", bg='white',justify='center')
+        result3_label = tk.Label(root, text="", bg='white',justify='center')
+        result4_label = tk.Label(root, text="", bg='white',justify='center')
+        err_label = tk.Label(root, text="", bg='white')
+    finally:
+        result_label = tk.Label(root, text="", bg='white', justify='center')
+        result1_label = tk.Label(root, text="", bg='white', justify='center')
+        result2_label = tk.Label(root, text="", bg='white', justify='center')
+        result3_label = tk.Label(root, text="", bg='white', justify='center')
+        result4_label = tk.Label(root, text="", bg='white', justify='center')
+        err_label = tk.Label(root, text="", bg='white')
     
     city = city_entry.get()
     if not city:
@@ -24,8 +38,9 @@ def get_weather():
         
         if data["cod"] == "404":
             result_label.config(text="City not found. Please enter a valid city name.")
-
-        
+        report=json.dumps(data,indent=4)
+        with open ("weather_detail.json","w") as w:
+            w.write(report)
         weather_city = f"Weather in {city}:"
         weather_info= f"Description:\n {data['weather'][0]['description']}\n"
         weather_Temperature= f"Temperature:\n {data['main']['temp']}°C\n"
@@ -35,13 +50,13 @@ def get_weather():
         result_label.config(text=weather_city)
         result1_label.config(text=weather_info)
         weather_condition = data['weather'][0]['main'].lower()
-        weather_bg_images = {'clear': "bg_clear.jpg",'clouds': "bg_cloudy.jpg",'rains': "bg_rainy.jpg",'snow': "bg_snow.jpeg",'haze': "bg_rainy.jpg"}
+        weather_bg_images = {'clear': "New folder/bg_clear.jpg",'clouds': "New folder/bg_cloudy.jpg",'rains': "New folder/bg_rainy.jpg",'snow': "New folder/bg_snow.jpeg",'haze': "New folder/bg_rainy.jpg"}
  
         if weather_condition in weather_bg_images:
             bg_image_path = weather_bg_images[weather_condition]
         else:
         # Default background image if weather condition is not found
-            bg_image_path = "bg.jpg"
+            bg_image_path = "New folder/bg2.jpg"
     
         # Load the selected background image
         bg = ImageTk.PhotoImage(file=bg_image_path)
@@ -86,7 +101,7 @@ root.title("Weather Forecast")
 root.config(bg='yellow')
 
 # Set the background image
-bg = ImageTk.PhotoImage(file="bg.jpg")
+bg = ImageTk.PhotoImage(file="New folder/bg2.jpg")
 bg_label = tk.Label(root, image=bg)
 bg_label.place(x=0, y=0)
 w = bg.width()
